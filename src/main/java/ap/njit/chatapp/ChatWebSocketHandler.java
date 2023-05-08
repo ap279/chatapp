@@ -1,10 +1,10 @@
 package ap.njit.chatapp;
 
 
+import ap.njit.chatapp.controllers.MainController;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,10 +19,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final WebSocketSessionManager sessionManager;
     private final HttpSessionManager httpSessionManager;
 
+    private final MainController mainController;
+
     @Autowired
-    public ChatWebSocketHandler(WebSocketSessionManager sessionManager, HttpSessionManager httpSessionManager) {
+    public ChatWebSocketHandler(WebSocketSessionManager sessionManager, HttpSessionManager httpSessionManager, MainController mainController) {
         this.sessionManager = sessionManager;
         this.httpSessionManager = httpSessionManager;
+        this.mainController = mainController;
     }
 
 
@@ -49,7 +52,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        // handle message here...
+        // Send to a new endpoint specifically for display
+
         // when message is received, send it to all connected sessions
         for (WebSocketSession s: connectedSessions) {
             if (s.isOpen()) {

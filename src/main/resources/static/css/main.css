@@ -21,10 +21,20 @@
     height: 100%;
 }
 
-/*#message-parent {*/
-/*    height: 100%;*/
-/*}*/
-
 .incoming-message {
     display: block;
+}
+
+#chat-room-buttons-parent {
+    position: relative;
+}
+
+#chat-room-btns-div {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+}
+
+#display-div {
+    font-size: 10rem;
 }

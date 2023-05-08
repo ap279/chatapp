@@ -3,6 +3,7 @@ package ap.njit.chatapp.controllers;
 import ap.njit.chatapp.ChatWebSocketHandler;
 import ap.njit.chatapp.HttpSessionManager;
 import ap.njit.chatapp.WebSocketSessionManager;
+import ap.njit.chatapp.activities.Flip;
 import ap.njit.chatapp.repositories.ConnectedSessionRespository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,6 +41,8 @@ public class MainController {
     private final WebSocketSessionManager webSocketSessionManager;
     private final HttpSessionManager httpSessionManager;
 
+    private Flip flip;
+
     @Autowired
     public MainController(ApplicationContext context, WebSocketSessionManager webSocketSessionManager, HttpSessionManager httpSessionManager) {
         this.context = context;
@@ -64,6 +67,13 @@ public class MainController {
         return "lobby";
     }
 
+    @GetMapping("/flip")
+    public String flip(@RequestParam String message) {
+        this.flip = new Flip(message);
+        String result = this.flip.flip();
+        return result;
+    }
+
     public Map<String, HttpSession> getAllConnectedHttpSessions() {
         return this.httpSessionManager.sessions;
     };
@@ -83,6 +93,7 @@ public class MainController {
             allAttrs.add(attrs);
         };
         return usernames;
+
     };
 }
 

@@ -1,10 +1,11 @@
 // Get username from data attribute in html
-// username = document.body.getAttribute('data-username');
+username = document.body.getAttribute('data-username');
 hostname = document.body.getAttribute('data-hostname');
 port = document.body.getAttribute('data-port');
 console.log(hostname);
 console.log(port);
-const socket = new WebSocket(`ws://${hostname}:${port}/chat`);
+const socket = new WebSocket(`ws://${hostname}:${port}/chat/lobby`);
+const displaySocket = new WebSocket(`ws://${hostname}:${port}/display/lobby`)
 
 // socket.addEventListener('open', () => {
 //     // Handle new joiners here
@@ -16,6 +17,10 @@ socket.addEventListener('message', (event) => {
     console.log('message received!');
     // Parse the json data from the message
     const message = JSON.parse(event.data);
+    this.displayMessage(message)
+})
+
+function displayMessage(message) {
     // Display message in window
     const messageViewport = document.getElementById('message-viewport');
     const incomingMessage = document.createElement('div');
@@ -33,10 +38,7 @@ socket.addEventListener('message', (event) => {
     incomingMessage.appendChild(messageTextBox);
 
     messageViewport.appendChild(incomingMessage);
-
-    // Check for and display roll if it is valid
-    this.roll(message.message)
-})
+}
 
 // Get the form element for sending a new message
 const newMessageForm = document.getElementById('new-message-form');
@@ -54,51 +56,46 @@ newMessageForm.addEventListener('submit', (e) => {
     // We will make username dynamic later but for now we'll just hard code it into our object
     // Remember that it must be an object because it's being json deserialized in the code above
     const newMessagePayload = {
-        username: 'example_user',
+        username: username,
         message: newMessage
     }
     console.log(newMessage)
     // Send payload but make sure to convert it to a string!
     socket.send(JSON.stringify(newMessagePayload))
+    displaySocket.send(JSON.stringify(newMessagePayload))
     // Reset form to allow new input
     newMessageForm.reset()
 })
 
-// Function for handling roll functionality
-function roll(message) {
-    const rollNumber = this.checkForRoll(message);
-    if (rollNumber != null) {
-        // Ensure that it is within range
-        const isInRange = this.checkRollRange(rollNumber)
-        if (isInRange) {
-            // Display message to users
-            this.displayRoll(rollNumber)
-        }
+// Handle /roll XXX and /flip result from server in the received message
+displaySocket.addEventListener('message', (e) => {
+    e.preventDefault();
+    const messageData = e.data;
+    const jsonData = JSON.parse(messageData);
+    changeDisplay(jsonData);
+})
+
+// newMessageForm.addEventListener('submit', (e) => {
+//     const newMessagePayload = {
+//         username: username,
+//         message: form
+//     }
+// })
+
+function changeDisplay(jsonMessage) {
+    const displayDiv = document.getElementById('display-div');
+
+    // Display message in message viewport and roll area depending on result
+    if (jsonMessage['flip_result'] !== 'null') {
+        displayMessage(jsonMessage['flip_result'])
+        displayDiv.textContent = jsonMessage['flip_result']
+    } else if (jsonMessage['roll_result'] !== 'null') {
+        displayMessage(jsonMessage['roll_result'])
+        displayDiv.textContent = jsonMessage['roll_result']
     }
-}
 
-// Check for regex match in roll
-function checkForRoll(message) {
-    const input = "/roll 123 is your lucky number";
-    const pattern = /\/roll\s*(\d{3})\b/;
-    const match = pattern.exec(input);
-    if (match) {
-        const rollString = match[1]; // "123"
-        // Convert it to int
-        return parseInt(rollString);
-    } else {
-        return null;
-    }
+    // Output to the console for verification
+    console.log(jsonMessage)
 
 }
 
-// Ensure that it's within our range
-function checkRollRange(rollNumber) {
-    const lowerBound = 0
-    const upperBound = 100
-    return rollNumber >= lowerBound && rollNumber <= upperBound;
-}
-
-function displayRoll(rollNumber) {
-
-}
