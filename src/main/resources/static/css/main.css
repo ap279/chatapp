@@ -20,3 +20,7 @@
 #message-viewport {
     height: 100%;
 }
+
+.incoming-message {
+    display: block;
+}
