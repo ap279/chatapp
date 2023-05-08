@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
-public class DatabaseController {
+public class UserController {
     private final UserRepository userRepository;
 
     @Autowired
-    public DatabaseController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -36,4 +36,5 @@ public class DatabaseController {
     public @ResponseBody Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
+
 }
