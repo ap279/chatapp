@@ -1,0 +1,22 @@
+#messageinput {
+    min-width: 100%;
+    resize: none;
+}
+
+#message-container {
+    position: relative;
+}
+
+#message-parent {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+}
+
+.scrollable {
+    overflow: auto;
+}
+
+#message-viewport {
+    height: 100%;
+}
