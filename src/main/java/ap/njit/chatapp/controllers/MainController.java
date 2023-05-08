@@ -1,26 +1,16 @@
 package ap.njit.chatapp.controllers;
 
-import ap.njit.chatapp.ChatWebSocketHandler;
 import ap.njit.chatapp.HttpSessionManager;
 import ap.njit.chatapp.WebSocketSessionManager;
-import ap.njit.chatapp.activities.Flip;
-import ap.njit.chatapp.repositories.ConnectedSessionRespository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +31,27 @@ public class MainController {
     private final WebSocketSessionManager webSocketSessionManager;
     private final HttpSessionManager httpSessionManager;
 
-    private Flip flip;
+//    @Autowired
+//    private SpringTemplateEngine templateEngine;
+//
+//
+//    private Flip flip;
+    @GetMapping("/room/{room}")
+    public String accessRoom(@PathVariable String room, Model model, HttpSession session) {
+        model.addAttribute("room", room);
+        String hostName = env.getProperty("server.address");
+        String port = env.getProperty("server.port");
+        model.addAttribute("hostname", hostName);
+        model.addAttribute("port", port);
+        model.addAttribute("username", session.getAttribute("username"));
+        model.addAttribute("connectedSessions", this.getAllConnectedSessions());
+        return "room";
+    }
+
+//    @GetMapping("/chat/{room}")
+//    public String create(@PathVariable String room, Model model) {
+//        return "lobby";
+//    }
 
     @Autowired
     public MainController(ApplicationContext context, WebSocketSessionManager webSocketSessionManager, HttpSessionManager httpSessionManager) {
@@ -67,12 +77,23 @@ public class MainController {
         return "lobby";
     }
 
-    @GetMapping("/flip")
-    public String flip(@RequestParam String message) {
-        this.flip = new Flip(message);
-        String result = this.flip.flip();
-        return result;
+//    @GetMapping("/flip")
+//    public String flip(@RequestParam String message) {
+//        this.flip = new Flip(message);
+//        String result = this.flip.flip();
+//        return result;
+//    }
+
+    @GetMapping("/create")
+    public String createRoom() {
+        return "create";
     }
+
+    @GetMapping("/join")
+    public String joinRoom() {
+        return "join";
+    }
+
 
     public Map<String, HttpSession> getAllConnectedHttpSessions() {
         return this.httpSessionManager.sessions;

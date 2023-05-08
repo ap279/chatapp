@@ -1,15 +1,9 @@
 package ap.njit.chatapp.handlers;
 
-import ap.njit.chatapp.ChatWebSocketHandler;
-import ap.njit.chatapp.HttpSessionManager;
-import ap.njit.chatapp.WebSocketSessionManager;
 import ap.njit.chatapp.activities.Flip;
 import ap.njit.chatapp.activities.Roll;
-import ap.njit.chatapp.controllers.MainController;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -17,7 +11,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

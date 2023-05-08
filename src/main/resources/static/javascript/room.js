@@ -2,11 +2,14 @@
 username = document.body.getAttribute('data-username');
 hostname = document.body.getAttribute('data-hostname');
 port = document.body.getAttribute('data-port');
+room = document.body.getAttribute('data-room');
 
 console.log(hostname);
 console.log(port);
-const socket = new WebSocket(`ws://${hostname}:${port}/chat/lobby`);
-const displaySocket = new WebSocket(`ws://${hostname}:${port}/display/lobby`)
+const socket = new WebSocket(`ws://${hostname}:${port}/chat/${room}`);
+const displaySocket = new WebSocket(`ws://${hostname}:${port}/display/${room}`)
+
+console.log(room)
 
 // socket.addEventListener('open', () => {
 //     // Handle new joiners here
